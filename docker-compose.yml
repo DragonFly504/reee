@@ -1,9 +1,18 @@
+version: "3.9"
+
 services:
-  stealer-app:          # Service name (can be anything)
-    build: .            # Build from Dockerfile in current dir
-    image: 365-stealer-app:latest  # Explicit tag – this fixes "No such image"
-    ports:
-      - "80:80"         # Map host port 80 to container 80
-    volumes:
-      - .:/var/www/html  # Optional: for live code edits (remove if not needed)
-    restart: unless-stopped  # Optional: auto-restart on failure
+ stealer-app:
+ build: . # Uses Dockerfile in repo root
+ image: 365-stealer-app:latest
+ ports:
+ - "80:80" # Exposes HTTP to the world
+ # Remove this in production unless you really need live-mount:
+ # volumes:
+ # - .:/var/www/html
+ restart: unless-stopped
+ networks:
+ - reee-net
+
+networks:
+ reee-net:
+ driver: bridge
