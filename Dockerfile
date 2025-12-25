@@ -1,20 +1,29 @@
-# Use the official Python image
-FROM python:3.9-slim
+FROM php:8.2-apache
 
-# Set the working directory
-WORKDIR /app
+# Install Python, pip, and minimal extras, then enable Apache mod_rewrite
+RUN apt-get update && apt-get install -y \
+ ca-certificates \
+ python3 \
+ python3-pip \
+ && rm -rf /var/lib/apt/lists/* \
+ && a2enmod rewrite
 
-# Copy the requirements file
-COPY requirements.txt .
+# Set working directory to the web root
+WORKDIR /var/www/html
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy application code into the container
+# (add a .dockerignore so you don't copy .git, docker-compose.yml, etc.)
+COPY . /var/www/html
 
-# Copy the application code
-COPY . .
+# Install Python dependencies if requirements.txt exists
+RUN if [ -f requirements.txt ]; then \
+ pip3 install --no-cache-dir -r requirements.txt; \
+ fi
 
-# Expose the port the app runs on (if applicable)
-EXPOSE 5000
+# Fix ownership and permissions for the web server user
+RUN chown -R www-data:www-data /var/www/html \
+ && chmod -R 755 /var/www/html
 
-# Command to run the application
-CMD ["python", "app.py"]  # Replace 'your_script.py' with the main script of the project
+EXPOSE 80
+
+CMD ["apache2ctl", "-D", "FOREGROUND"]
