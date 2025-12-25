@@ -1,29 +1,39 @@
+# Base image with PHP and Apache (for the web UI)
 FROM php:8.2-apache
 
-# Install Python, pip, and minimal extras, then enable Apache mod_rewrite
+# Install Python, pip, SQLite, and build dependencies
 RUN apt-get update && apt-get install -y \
- ca-certificates \
- python3 \
- python3-pip \
- && rm -rf /var/lib/apt/lists/* \
- && a2enmod rewrite
+    python3 \
+    python3-pip \
+    python3-venv \
+    sqlite3 \
+    libsqlite3-dev \
+    build-essential \
+    git \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory to the web root
+# Upgrade pip to avoid fetch/install issues
+RUN pip3 install --upgrade pip setuptools wheel
+
+# Enable PHP SQLite extension
+RUN docker-php-ext-install pdo_sqlite
+
+# Set working directory (Apache default)
 WORKDIR /var/www/html
 
-# Copy application code into the container
-# (add a .dockerignore so you don't copy .git, docker-compose.yml, etc.)
+# Copy repo files
 COPY . /var/www/html
 
-# Install Python dependencies if requirements.txt exists
-RUN if [ -f requirements.txt ]; then \
- pip3 install --no-cache-dir -r requirements.txt; \
- fi
+# Install Python dependencies (now more robust)
+RUN pip3 install -r requirements.txt
 
-# Fix ownership and permissions for the web server user
+# Set permissions for Apache user
 RUN chown -R www-data:www-data /var/www/html \
- && chmod -R 755 /var/www/html
+    && chmod -R 755 /var/www/html
 
+# Expose port
 EXPOSE 80
 
+# Start Apache]
 CMD ["apache2ctl", "-D", "FOREGROUND"]
