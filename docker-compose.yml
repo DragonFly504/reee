@@ -1,10 +1,9 @@
-version: "3.9"
-
 services:
- stealer-app:
- build:
- context: . # folder where Dockerfile and requirements.txt are
- dockerfile: Dockerfile
- image: 365-stealer-app:latest
- ports:
- - "80:80" # example; adjust/remove as needed
+  stealer-app:          # Service name (can be anything)
+    build: .            # Build from Dockerfile in current dir
+    image: 365-stealer-app:latest  # Explicit tag – this fixes "No such image"
+    ports:
+      - "80:80"         # Map host port 80 to container 80
+    volumes:
+      - .:/var/www/html  # Optional: for live code edits (remove if not needed)
+    restart: unless-stopped  # Optional: auto-restart on failure
