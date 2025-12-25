@@ -2,13 +2,10 @@ version: "3.9"
 
 services:
  stealer-app:
- build: . # Uses Dockerfile in repo root
+ build: .
  image: 365-stealer-app:latest
  ports:
- - "80:80" # Exposes HTTP to the world
- # Remove this in production unless you really need live-mount:
- # volumes:
- # - .:/var/www/html
+ - "8080:80" # Host 8080 -> container 80
  restart: unless-stopped
  networks:
  - reee-net
