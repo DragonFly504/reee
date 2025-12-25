@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+ stealer-app:
+ build:
+ context: . # folder where Dockerfile and requirements.txt are
+ dockerfile: Dockerfile
+ image: 365-stealer-app:latest
+ ports:
+ - "80:80" # example; adjust/remove as needed
