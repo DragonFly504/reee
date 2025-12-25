@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run the application
-CMD ["python", "your_script.py"]  # Replace 'your_script.py' with the main script of the project
+CMD ["python", "app.py"]  # Replace 'your_script.py' with the main script of the project
