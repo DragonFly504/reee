@@ -1,9 +1,18 @@
+version: "3.9"
+
 services:
-  stealer-app:          # Service name (can be anything)
-    build: .            # Build from Dockerfile in current dir
-    image: 365-stealer-app:latest  # Explicit tag – this fixes "No such image"
-    ports:
-      - "8080:80"         
-    volumes:
-      - .:/var/www/html  # Optional: for live code edits (remove if not needed)
-    restart: unless-stopped  # Optional: auto-restart on failure
+ stealer-app:
+ build: . # Uses Dockerfile in current dir
+ image: 365-stealer-app:latest
+ ports:
+ - "8080:80" # Host 8080 -> container 80 (Apache)
+ # In development, you may want this:
+ # volumes:
+ # - .:/var/www/html
+ restart: unless-stopped
+ networks:
+ - reee-net
+
+networks:
+ reee-net:
+ driver: bridge
