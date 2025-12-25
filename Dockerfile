@@ -2,7 +2,7 @@
 FROM php:8.2-apache
 
 # Install Python, pip, SQLite, and build dependencies
-RUN apt-get update && apt-get install -y \
+RUN sudo apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip to avoid fetch/install issues
-RUN pip3 install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip setuptools wheel
 
 # Enable PHP SQLite extension
 RUN docker-php-ext-install pdo_sqlite
@@ -26,7 +26,7 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Install Python dependencies (now more robust)
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Set permissions for Apache user
 RUN chown -R www-data:www-data /var/www/html \
