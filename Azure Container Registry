@@ -1,3 +1,0 @@
-docker build -t myapp:latest .
-docker tag myapp:latest <registry>/myapp:latest
-docker push <registry>/myapp:latest
