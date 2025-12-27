@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 
 # Copy only requirements first (better layer caching)
-COPY requirements.txt .
+COPY requirements.txt 
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
