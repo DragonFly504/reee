@@ -30,11 +30,12 @@ COPY . .
 RUN chown -R www-data:www-data /var/www/html \
  && chmod -R 755 /var/www/html
 
- RUN echo 'ServerName Onlinefcu.com' >/etc/apache2/conf-available/servername.conf \
-&& a2enconf servername
+# Set Apache ServerName to avoid warnings
+RUN echo 'ServerName Onlinefcu.com' > /etc/apache2/conf-available/servername.conf \
+ && a2enconf servername
 
 # Expose Apache HTTP port (mapping to host is done in docker-compose.yml)
 EXPOSE 80
 
-# Run Apache in foreground (required for Docker)
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+# Run Apache in foreground
+CMD ["apachectl", "-D", "FOREGROUND"]
