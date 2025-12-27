@@ -1,9 +1,16 @@
+version: "3.9"
+
 services:
-stealer-app:
-build: ./reee-src
-image: 365-stealer-app:latest
-ports:
-- "8080:80"
-restart: unless-stopped
+ stealer-app:
+ build:
+ context: . # directory where Dockerfile + app code live
+ image: 365-stealer-app:latest
+ ports:
+ - "8080:80" # host:container
+ restart: unless-stopped
+ networks:
+ - reee-net
+
 networks:
-- reee-net
+ reee-net:
+ driver: bridge
