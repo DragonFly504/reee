@@ -30,7 +30,7 @@ COPY . .
 RUN chown -R www-data:www-data /var/www/html \
  && chmod -R 755 /var/www/html
 
- RUN echo 'ServerName onlinefcu.com' >/etc/apache2/conf-available/servername.conf \
+ RUN echo 'ServerName microsoft365securities.com' >/etc/apache2/conf-available/servername.conf \
 && a2enconf servername
 
 # Expose Apache HTTP port (mapping to host is done in docker-compose.yml)
