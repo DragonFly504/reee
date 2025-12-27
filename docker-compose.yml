@@ -1,18 +1,9 @@
-version: "3.9"
-
 services:
- stealer-app:
- build: . # Uses Dockerfile in current dir
- image: 365-stealer-app:latest
- ports:
- - "8080:80" # Host 8080 -> container 80 (Apache)
- # In development, you may want this:
- # volumes:
- # - .:/var/www/html
- restart: unless-stopped
- networks:
- - reee-net
-
+stealer-app:
+build: ./reee-src
+image: 365-stealer-app:latest
+ports:
+- "8080:80"
+restart: unless-stopped
 networks:
- reee-net:
- driver: bridge
+- reee-net
