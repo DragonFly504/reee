@@ -1,41 +1,33 @@
-# Use official Python slim image (lightweight, up-to-date)
-FROM python:3.12-slim
+# Use a base image with PHP and Apache for the web UI
+FROM php:8.2-apache
 
-# Prevent interactive prompts during install
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install Apache, PHP, and required extensions
+# Install system dependencies, Python, and pip
 RUN apt-get update && apt-get install -y \
- apache2 \
- libapache2-mod-php \
- php-sqlite3 \
- php-mbstring \
- ca-certificates \
- && rm -rf /var/lib/apt/lists/* \
- && a2enmod rewrite
+    python3 \
+    python3-pip \
+    python3-venv \
+    sqlite3 \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory / document root
+# Enable Apache modules and SQLite for PHP
+RUN docker-php-ext-install pdo_sqlite
+
+# Set working directory
 WORKDIR /var/www/html
 
-# Copy only requirements first (better layer caching)
-COPY requirements.txt 
+# Copy all repo files to the web root
+COPY . /var/www/html
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-# Copy the rest of the application code
-COPY . .
-
-# Permissions for Apache
-RUN chown -R www-data:www-data /var/www/html \
- && chmod -R 755 /var/www/html
-
-# Set Apache ServerName to avoid warnings
-RUN echo 'ServerName Onlinefcu.com' > /etc/apache2/conf-available/servername.conf \
- && a2enconf servername
-
-# Expose Apache HTTP port (mapping to host is done in docker-compose.yml)
+# Expose ports (default Apache is 80; adjust if needed for tool's --port)
 EXPOSE 80
 
-# Run Apache in foreground
-CMD ["apachectl", "-D", "FOREGROUND"]
+# Set permissions for scripts and database (adjust paths as per your setup)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Start Apache in the foreground
+CMD ["apache2-foreground"]
