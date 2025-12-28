@@ -1,13 +1,16 @@
 version: "3.9"
 
 services:
- stealer-app:
- build:
- context: .
- dockerfile: Dockerfile
- container_name: stealer-app
- ports:
- - "8080:80" # safer if port 80 is used on the VPS
- restart: unless-stopped
- environment:
- TZ: "UTC"
+  stealer-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stealer-app
+    ports:
+      - "8080:80"   # change to 80:80 if no conflict
+    restart: unless-stopped
+    environment:
+      TZ: "UTC"
+      APP_ENV: "production"
+    volumes:
+      - ./data:/var/www/html/data   # persistent storage
