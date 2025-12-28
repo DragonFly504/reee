@@ -3,8 +3,11 @@ version: "3.9"
 services:
  stealer-app:
  build:
- context: . # folder where Dockerfile and requirements.txt are
+ context: .
  dockerfile: Dockerfile
- image: 365-stealer-app:latest
+ container_name: stealer-app
  ports:
- - "80:80" # example; adjust/remove as needed
+ - "8080:80" # safer if port 80 is used on the VPS
+ restart: unless-stopped
+ environment:
+ TZ: "UTC"
